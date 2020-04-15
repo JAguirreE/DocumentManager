@@ -2,11 +2,14 @@
 
 namespace DocumentManager
 {
-    class Program
+  class Program
+  {
+    
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Hello World!");
-        }
+      DocGenerator docGenerator = new DocGenerator();
+
+      docGenerator.GenerateDocs();
     }
+  }
 }
