@@ -8,115 +8,129 @@ namespace DocumentManager
   public class DocGenerator
   {
     #region Propiedades
-
-    private readonly Random Rnd = new Random();
-    private readonly string CommonPath = Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).Parent.FullName).FullName + "\\common";
-
-    private string[] Names = new string[] 
-    {
-      "Andres",
-      "Alejandra",
-      "Carlos",
-      "Camilo",
-      "Daniela",
-      "Duvan",
-      "Esteban",
-      "Estela",
-      "Fabiola",
-      "Francisco"
-    };
-
-    private string[] Lastnames = new string[]
-    {
-      "Arias",
-      "Aguirre",
-      "Calderon",
-      "Cardenas",
-      "Diaz",
-      "Diomedes",
-      "Estrada",
-      "Estupiñan",
-      "Franco",
-      "Falcon"
-    };
-
-    private string[] DocTypes = new string[]
-    {
-      "CC",
-      "PASAPORTE",
-      "CE",
-      "TI"
-    };
-
-    private string[] DocNumbers = new string[]
-    {
-      "1225485",
-      "3215732",
-      "8073795",
-      "2392227",
-      "7250142",
-      "4315731",
-      "6181647",
-      "8761204",
-      "1175785",
-      "5003409"
-    };
-
-    private string[] Observations = new string[]
-    {
-      "N/A",
-      "Pendiente de documento",
-      "Urgente",
-      "Generación E",
-      "Consultar en sistema"
-    };
-
-    private string[] Subjects = new string[]
-    {
-      "Algebra lineal",
-      "Programacion I",
-      "Bases de datos",
-      "Redes",
-      "Ingenieria de software"
-    };
-
-    private string[] Careers = new string[]
-    {
-      "Ingenieria en sistemas",
-      "Administracion",
-      "Contabilidad",
-      "Medicina",
-      "Ingenieria electronica"
-    };
-
-    private string[] Dates = new string[]
-    {
-      "2020/01/15",
-      "2020/04/27",
-      "2020/02/18",
-      "2020/03/30",
-      "2020/01/11"
-    };
-
-    private string[] PaymentMethods = new string[]
-    {
-      "Paypal",
-      "Efecty",
-      "Ventanilla",
-      "Transferencia",
-      "PSE"
-    };
-
-    private string[] Reasons = new string[]
-    {
-      "Cambio de carrera",
-      "Personal",
-      "Insolvencia"
-    };
-
+    private readonly Random Rnd;
+    private readonly string FilesPath;
+    private string[] Names;
+    private string[] Lastnames;
+    private string[] DocTypes;
+    private string[] DocNumbers;
+    private string[] Observations;
+    private string[] Subjects;
+    private string[] Careers;
+    private string[] Dates;
+    private string[] PaymentMethods;
+    private string[] Reasons;
     #endregion
 
-    public DocGenerator() { }
+    #region Constructor
+    public DocGenerator() 
+    {
+      Rnd = new Random();
+      FilesPath = Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).Parent.FullName).FullName + "\\files";
+
+      Names = new string[]
+      {
+        "Andres",
+        "Alejandra",
+        "Carlos",
+        "Camilo",
+        "Daniela",
+        "Duvan",
+        "Esteban",
+        "Estela",
+        "Fabiola",
+        "Francisco"
+      };
+
+      Lastnames = new string[]
+      {
+        "Arias",
+        "Aguirre",
+        "Calderon",
+        "Cardenas",
+        "Diaz",
+        "Diomedes",
+        "Estrada",
+        "Estupiñan",
+        "Franco",
+        "Falcon"
+      };
+
+      DocTypes = new string[]
+      {
+        "CC",
+        "PASAPORTE",
+        "CE",
+        "TI"
+      };
+
+      DocNumbers = new string[]
+      {
+        "1225485",
+        "3215732",
+        "8073795",
+        "2392227",
+        "7250142",
+        "4315731",
+        "6181647",
+        "8761204",
+        "1175785",
+        "5003409"
+      };
+
+      Observations = new string[]
+      {
+        "N/A",
+        "Pendiente de documento",
+        "Urgente",
+        "Generación E",
+        "Consultar en sistema"
+      };
+
+      Subjects = new string[]
+      {
+        "Algebra lineal",
+        "Programacion I",
+        "Bases de datos",
+        "Redes",
+        "Ingenieria de software"
+      };
+
+      Careers = new string[]
+      {
+        "Ingenieria en sistemas",
+        "Administracion",
+        "Contabilidad",
+        "Medicina",
+        "Ingenieria electronica"
+      };
+
+      Dates = new string[]
+      {
+        "2020/01/15",
+        "2020/04/27",
+        "2020/02/18",
+        "2020/03/30",
+        "2020/01/11"
+      };
+
+      PaymentMethods = new string[]
+      {
+        "Paypal",
+        "Efecty",
+        "Ventanilla",
+        "Transferencia",
+        "PSE"
+      };
+
+      Reasons = new string[]
+      {
+        "Cambio de carrera",
+        "Personal",
+        "Insolvencia"
+      };
+    }
+    #endregion
 
     /// <summary>
     /// Llama todos los métodos para generar los diferentes tipos de archivo CSV
@@ -155,7 +169,7 @@ namespace DocumentManager
         builder.Append("\n");
         builder.Append(newLine);
 
-        string filePath = string.Concat(CommonPath, "/Solicitud de inscripción " + i.ToString());
+        string filePath = string.Concat(FilesPath, "/Solicitud de inscripción " + i.ToString());
         File.WriteAllText(filePath, builder.ToString());
       }
     }
@@ -186,7 +200,7 @@ namespace DocumentManager
         builder.Append("\n");
         builder.Append(newLine);
 
-        string filePath = string.Concat(CommonPath, "/Solicitud de matricula financiera " + i.ToString());
+        string filePath = string.Concat(FilesPath, "/Solicitud de matricula financiera " + i.ToString());
         File.WriteAllText(filePath, builder.ToString());
       }
     }
@@ -218,7 +232,7 @@ namespace DocumentManager
         builder.Append("\n");
         builder.Append(newLine);
 
-        string filePath = string.Concat(CommonPath, "/Solicitud de matricula academica " + i.ToString());
+        string filePath = string.Concat(FilesPath, "/Solicitud de matricula academica " + i.ToString());
         File.WriteAllText(filePath, builder.ToString());
       }
     }
@@ -249,7 +263,7 @@ namespace DocumentManager
         builder.Append("\n");
         builder.Append(newLine);
 
-        string filePath = string.Concat(CommonPath, "/Solicitud de graduacion " + i.ToString());
+        string filePath = string.Concat(FilesPath, "/Solicitud de graduacion " + i.ToString());
         File.WriteAllText(filePath, builder.ToString());
       }
     }
@@ -279,7 +293,7 @@ namespace DocumentManager
         builder.Append("\n");
         builder.Append(newLine);
 
-        string filePath = string.Concat(CommonPath, "/Solicitud de creacion estudiante " + i.ToString());
+        string filePath = string.Concat(FilesPath, "/Solicitud de creacion estudiante " + i.ToString());
         File.WriteAllText(filePath, builder.ToString());
       }
     }
@@ -310,7 +324,7 @@ namespace DocumentManager
         builder.Append("\n");
         builder.Append(newLine);
 
-        string filePath = string.Concat(CommonPath, "/Solicitud de cancelacion matricula " + i.ToString());
+        string filePath = string.Concat(FilesPath, "/Solicitud de cancelacion matricula " + i.ToString());
         File.WriteAllText(filePath, builder.ToString());
       }
     }
