@@ -20,17 +20,19 @@ namespace DocumentManager
       Counter = 0;
     }
 
+    /// <summary>
+    /// Inicia el proceso
+    /// </summary>
     public void Start()
     {
       Timer = new Timer
       {
-        Interval = 500,
+        Interval = 1000,
         AutoReset = true,
         Enabled = true,
       };
 
       Timer.Elapsed += DosifyFiles;
-      Console.Read();
     }
 
     private void DosifyFiles(object source, ElapsedEventArgs e)
@@ -38,9 +40,13 @@ namespace DocumentManager
       MoveFile();
     }
 
+    /// <summary>
+    /// Mueve los archivos de la carpeta files a la carpeta common
+    /// para simular la entrada de archivos vía FTP
+    /// </summary>
     private void MoveFile()
     {
-      Console.WriteLine("Transfering files via FTP");
+      Console.WriteLine("Transfering files vía FTP");
       if(Counter < Files.Length)
       {
         string newDir = Files[Counter].Replace("files", "common");
@@ -52,9 +58,5 @@ namespace DocumentManager
         Timer.Stop();
       }
     }
-
-    
-
-
   }
 }

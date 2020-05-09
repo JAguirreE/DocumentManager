@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
+using DocumentManager.Constants;
 
 namespace DocumentManager
 {
@@ -10,6 +12,8 @@ namespace DocumentManager
     #region Propiedades
     private readonly Random Rnd;
     private readonly string FilesPath;
+    private readonly string CommonPath;
+    
     private string[] Names;
     private string[] Lastnames;
     private string[] DocTypes;
@@ -26,7 +30,8 @@ namespace DocumentManager
     public DocGenerator() 
     {
       Rnd = new Random();
-      FilesPath = Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).Parent.FullName).FullName + "\\files";
+      FilesPath = Directories.FILESPATH;
+      CommonPath = Directories.COMMONPATH;
 
       Names = new string[]
       {
@@ -133,10 +138,54 @@ namespace DocumentManager
     #endregion
 
     /// <summary>
+    /// Elimina todos los archivos en los directorios antes de empezar
+    /// </summary>
+    private void CleanDirs()
+    {
+      string[] dirs = new string[]
+      {
+        Directories.COMMONPATH,
+        Directories.FILESPATH,
+        Directories.SOLCANMAPATH,
+        Directories.SOLCREESPATH,
+        Directories.SOLGRAPATH,
+        Directories.SOLIPATH,
+        Directories.SOLMAACPATH,
+        Directories.SOLMAFIPATH
+
+      };
+
+      foreach(string dir in dirs)
+      {
+        DirectoryInfo info = new DirectoryInfo(dir);
+
+        foreach (FileInfo file in info.GetFiles())
+        {
+          file.Delete();
+        }
+      }
+      //DirectoryInfo infoFiles = new DirectoryInfo(FilesPath);
+      //DirectoryInfo infoCommon = new DirectoryInfo(CommonPath);
+      
+
+      //foreach (FileInfo file in infoFiles.GetFiles())
+      //{
+      //  file.Delete();
+      //}
+
+      //foreach (FileInfo file in infoCommon.GetFiles())
+      //{
+      //  file.Delete();
+      //}
+    }
+
+    /// <summary>
     /// Llama todos los métodos para generar los diferentes tipos de archivo CSV
     /// </summary>
     public void GenerateDocs()
     {
+      CleanDirs();
+
       GenerateCSVSOLI();
       GenerateCSVMAFI();
       GenerateCSVMAAC();
@@ -150,13 +199,13 @@ namespace DocumentManager
     /// </summary>
     private void GenerateCSVSOLI()
     {
-      string TipoArchivo = "SOLI";
+      string TipoArchivo = FileTypes.SOLI;
 
       for(int i = 0; i < 10; i++)
       {
         StringBuilder builder = new StringBuilder();
 
-        string headers = "Nombres, Apellidos, Tipo documento, Numero documento, Observaciones, Tipo archivo";
+        string headers = "SOLI_Nombres,SOLI_Apellidos,SOLI_Tipo_documento,SOLI_Numero_documento,SOLI_Observaciones,SOLI_Tipo_archivo";
         string newLine = string.Format("{0},{1},{2},{3},{4},{5}",
         Names[Rnd.Next(Names.Length - 1)],
         Lastnames[Rnd.Next(Lastnames.Length - 1)],
@@ -169,7 +218,7 @@ namespace DocumentManager
         builder.Append("\n");
         builder.Append(newLine);
 
-        string filePath = string.Concat(FilesPath, "/Solicitud de inscripción " + i.ToString());
+        string filePath = string.Concat(FilesPath, "/Solicitud de inscripción " + i.ToString() + ".csv");
         File.WriteAllText(filePath, builder.ToString());
       }
     }
@@ -179,13 +228,13 @@ namespace DocumentManager
     /// </summary>
     private void GenerateCSVMAFI()
     {
-      string TipoArchivo = "MAFI";
+      string TipoArchivo = FileTypes.MAFI;
 
       for (int i = 0; i < 10; i++)
       {
         StringBuilder builder = new StringBuilder();
 
-        string headers = "Nombres, Apellidos, Tipo documento, Numero documento, Observaciones, Fecha pago, Medio pago, Tipo archivo";
+        string headers = "MAFI_Nombres,MAFI_Apellidos,MAFI_Tipo_documento,MAFI_Numero_documento,MAFI_Observaciones,MAFI_Fecha_pago,MAFI_Medio_pago,MAFI_Tipo_archivo";
         string newLine = string.Format("{0},{1},{2},{3},{4},{5},{6},{7}",
         Names[Rnd.Next(Names.Length - 1)],
         Lastnames[Rnd.Next(Lastnames.Length - 1)],
@@ -200,7 +249,7 @@ namespace DocumentManager
         builder.Append("\n");
         builder.Append(newLine);
 
-        string filePath = string.Concat(FilesPath, "/Solicitud de matricula financiera " + i.ToString());
+        string filePath = string.Concat(FilesPath, "/Solicitud de matricula financiera " + i.ToString() + ".csv");
         File.WriteAllText(filePath, builder.ToString());
       }
     }
@@ -210,14 +259,14 @@ namespace DocumentManager
     /// </summary>
     private void GenerateCSVMAAC()
     {
-      string TipoArchivo = "MAAC";
+      string TipoArchivo = FileTypes.MAAC;
 
       for (int i = 0; i < 10; i++)
       {
         StringBuilder builder = new StringBuilder();
 
-        string headers = "Nombres, Apellidos, Tipo documento, Numero documento, Observaciones, Materia 1, Materia 2, Materia 3, Tipo archivo";
-        string newLine = string.Format("{0},{1},{2},{3},{4},{5},{6},{7}",
+        string headers = "MAAC_Nombres,MAAC_Apellidos,MAAC_Tipo_documento,MAAC_Numero_documento,MAAC_Observaciones,MAAC_Materia 1,MAAC_Materia 2,MAAC_Materia 3,MAAC_Tipo_archivo";
+        string newLine = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}",
         Names[Rnd.Next(Names.Length - 1)],
         Lastnames[Rnd.Next(Lastnames.Length - 1)],
         DocTypes[Rnd.Next(DocTypes.Length - 1)],
@@ -232,7 +281,7 @@ namespace DocumentManager
         builder.Append("\n");
         builder.Append(newLine);
 
-        string filePath = string.Concat(FilesPath, "/Solicitud de matricula academica " + i.ToString());
+        string filePath = string.Concat(FilesPath, "/Solicitud de matricula academica " + i.ToString() + ".csv");
         File.WriteAllText(filePath, builder.ToString());
       }
     }
@@ -242,13 +291,13 @@ namespace DocumentManager
     /// </summary>
     private void GenerateCSVSOLGRA()
     {
-      string TipoArchivo = "SOLGRA";
+      string TipoArchivo = FileTypes.SOLGRA;
 
       for (int i = 0; i < 10; i++)
       {
         StringBuilder builder = new StringBuilder();
 
-        string headers = "Nombres, Apellidos, Tipo documento, Numero documento, Observaciones, Fecha ultimo semestre, Promedio final, Tipo archivo";
+        string headers = "SOLGRA_Nombres,SOLGRA_Apellidos,SOLGRA_Tipo_documento,SOLGRA_Numero_documento,SOLGRA_Observaciones,SOLGRA_Fecha_ultimo_semestre,SOLGRA_Promedio_final,SOLGRA_Tipo_archivo";
         string newLine = string.Format("{0},{1},{2},{3},{4},{5},{6},{7}",
         Names[Rnd.Next(Names.Length - 1)],
         Lastnames[Rnd.Next(Lastnames.Length - 1)],
@@ -263,7 +312,7 @@ namespace DocumentManager
         builder.Append("\n");
         builder.Append(newLine);
 
-        string filePath = string.Concat(FilesPath, "/Solicitud de graduacion " + i.ToString());
+        string filePath = string.Concat(FilesPath, "/Solicitud de graduacion " + i.ToString() + ".csv");
         File.WriteAllText(filePath, builder.ToString());
       }
     }
@@ -273,13 +322,13 @@ namespace DocumentManager
     /// </summary>
     private void GenerateCSVCREES()
     {
-      string TipoArchivo = "CREES";
+      string TipoArchivo = FileTypes.CREES;
 
       for (int i = 0; i < 10; i++)
       {
         StringBuilder builder = new StringBuilder();
 
-        string headers = "Nombres, Apellidos, Tipo documento, Numero documento, Observaciones, Carrera, Tipo archivo";
+        string headers = "CREES_Nombres,CREES_Apellidos,CREES_Tipo_documento,CREES_Numero_documento,CREES_Observaciones,CREES_Carrera,CREES_Tipo_archivo";
         string newLine = string.Format("{0},{1},{2},{3},{4},{5},{6}",
         Names[Rnd.Next(Names.Length - 1)],
         Lastnames[Rnd.Next(Lastnames.Length - 1)],
@@ -293,7 +342,7 @@ namespace DocumentManager
         builder.Append("\n");
         builder.Append(newLine);
 
-        string filePath = string.Concat(FilesPath, "/Solicitud de creacion estudiante " + i.ToString());
+        string filePath = string.Concat(FilesPath, "/Solicitud de creacion estudiante " + i.ToString() + ".csv");
         File.WriteAllText(filePath, builder.ToString());
       }
     }
@@ -303,13 +352,13 @@ namespace DocumentManager
     /// </summary>
     private void GenerateCSVCANMA()
     {
-      string TipoArchivo = "CANMA";
+      string TipoArchivo = FileTypes.CANMA;
 
       for (int i = 0; i < 10; i++)
       {
         StringBuilder builder = new StringBuilder();
 
-        string headers = "Nombres, Apellidos, Tipo documento, Numero documento, Observaciones, Carrera, Motivo, Tipo archivo";
+        string headers = "CANMA_Nombres,CANMA_Apellidos,CANMA_Tipo_documento,CANMA_Numero_documento,CANMA_Observaciones,CANMA_Carrera,CANMA_Motivo,CANMA_Tipo_archivo";
         string newLine = string.Format("{0},{1},{2},{3},{4},{5},{6},{7}",
         Names[Rnd.Next(Names.Length - 1)],
         Lastnames[Rnd.Next(Lastnames.Length - 1)],
@@ -324,10 +373,9 @@ namespace DocumentManager
         builder.Append("\n");
         builder.Append(newLine);
 
-        string filePath = string.Concat(FilesPath, "/Solicitud de cancelacion matricula " + i.ToString());
+        string filePath = string.Concat(FilesPath, "/Solicitud de cancelacion matricula " + i.ToString() + ".csv");
         File.WriteAllText(filePath, builder.ToString());
       }
     }
-
   }
 }
