@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using DocumentManager.Constants;
 
 namespace DocumentManager
@@ -10,9 +10,22 @@ namespace DocumentManager
   public class CSVtoXMLConverter
   {
     #region Propiedades
-    private const string XMLDECLARATION = "<?xml version=\"1.0\" ?>";
-    private const string XMLROOT = "<root>";
-    private const string XMLROOTEND = "</root>";
+    private readonly string[] standardLabel;
+    #endregion
+
+    #region Constructor
+    public CSVtoXMLConverter()
+    {
+      standardLabel = new string[]
+      {
+        "NOMBRES",
+        "APELLIDOS",
+        "TIPO_DOCUMENTO",
+        "NUMERO_DOCUMENTO",
+        "OBSERVACIONES",
+        "TIPO_ARCHIVO",
+      };
+    }
     #endregion
 
     /// <summary>
@@ -62,7 +75,7 @@ namespace DocumentManager
       }
 
       if(!string.IsNullOrEmpty(fileName))
-        ToXML(headers, data, filePath);
+        ToXML(headers, data, filePath, fileType);
     }
 
     /// <summary>
@@ -71,21 +84,104 @@ namespace DocumentManager
     /// <param name="headers">Títulos de las columnas</param>
     /// <param name="data">Campos del archivo</param>
     /// <param name="filePath">Ruta y nombre del nuevo destino</param>
-    public void ToXML(string[] headers, string[] data, string filePath)
+    /// <param name="fileType">Tipo del archivo</param>
+    public void ToXML(string[] headers, string[] data, string filePath, string fileType)
     {
       StringBuilder builder = new StringBuilder();
 
-      builder.Append(XMLDECLARATION);
-      builder.Append(XMLROOT);
+      builder.Append(XMLLabels.XMLDECLARATION);
+      builder.Append(XMLLabels.XMLROOT);
 
       for (int i = 0; i < headers.Length; i++)
       {
-        builder.Append($"<{headers[i]}>{data[i]}</{headers[i]}>");
+        builder.Append($"<{headers[i]}>{data[i]}</{headers[i]}>\n");
       }
 
-      builder.Append(XMLROOTEND);
+      builder.Append(XMLLabels.XMLROOTEND);
 
       File.WriteAllText(filePath, builder.ToString());
+      ToCanonicalXML(builder.ToString(), fileType);
+    }
+
+    /// <summary>
+    /// Convierte el archivo XML a la estrucura canónica
+    /// y lo envía a las colas
+    /// </summary>
+    /// <param name="xmlFile">Archivo xml</param>
+    /// <param name="fileType">Tipo del archivo</param>
+    private void ToCanonicalXML(string xmlFile, string fileType)
+    {
+      // Separar el archivo por filas
+      string[] rows = xmlFile.Split("\n");
+
+      string[] specificData = Array.Empty<string>();
+
+      // Declarar los regex que se usarán para descomponer las cabeceras y sus datos
+      Regex regexLabels = new Regex("[<>]");
+      Regex regexValues = new Regex("[><]");
+      Regex regexNormalizer = new Regex("[A-Z]+_");
+
+      StringBuilder builder = new StringBuilder();
+      builder.Append(XMLLabels.XMLDECLARATION);
+      builder.Append(XMLLabels.XMLROOT);
+
+      foreach (string row in rows)
+      {
+        // Match de las etiquetas
+        Match matchLabel = Regex.Match(row, @"<.+?>");
+        // Match de los valores
+        Match matchValue = Regex.Match(row, @">.+?<");
+
+        if (matchLabel.Success && !matchLabel.Value.Contains("root") && !matchLabel.Value.Contains("xml version"))
+        {
+          // Normalizar las etiquetas
+          string labelName = regexLabels.Replace(matchLabel.Value, "");
+          labelName = regexNormalizer.Replace(labelName, "").ToUpper();
+          string labelValue = regexValues.Replace(matchValue.Value, "");
+
+          if (MultiContains(labelName, standardLabel)) {
+            builder.Append($"<{labelName}>{labelValue}</{labelName}>\n");
+          } 
+          else
+          {
+            specificData.Append($"<{labelName}>{labelValue}</{labelName}>\n");
+          }
+        }
+
+        // Separar las etiquetas de datos específicos
+        if (specificData.Any())
+        {
+          builder.Append(XMLLabels.XMLDATOS);
+          foreach(string data in specificData)
+          {
+            builder.Append(data);
+          }
+          builder.Append(XMLLabels.XMLDATOSFIN);
+        }
+      }
+
+      builder.Append(XMLLabels.XMLROOTEND);
+      string canonicalXML = builder.ToString();
+
+      // Enviar al manejador de colas
+      QueueManager.Instance.Enqueue(canonicalXML, fileType);
+    }
+
+    /// <summary>
+    /// Evalua que un string contenga cualquiera coincidencia del array de palabras
+    /// </summary>
+    /// <param name="label">string a evaluar</param>
+    /// <param name="words">Array de palabras que debe contener</param>
+    /// <returns>Verdadero si contiene alguna de las palabras</returns>
+    private bool MultiContains(string label, string[] words)
+    {
+      foreach (string word in words)
+      {
+        if (label.Contains(word))
+          return true;
+      }
+
+      return false;
     }
   }
 }

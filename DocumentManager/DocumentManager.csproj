@@ -8,10 +8,28 @@
   <ItemGroup>
     <Compile Remove="common\**" />
     <Compile Remove="files\**" />
+    <Compile Remove="XML_SOLCANMA\**" />
+    <Compile Remove="XML_SOLCREES\**" />
+    <Compile Remove="XML_SOLGRA\**" />
+    <Compile Remove="XML_SOLI\**" />
+    <Compile Remove="XML_SOLMAAC\**" />
+    <Compile Remove="XML_SOLMAFI\**" />
     <EmbeddedResource Remove="common\**" />
     <EmbeddedResource Remove="files\**" />
+    <EmbeddedResource Remove="XML_SOLCANMA\**" />
+    <EmbeddedResource Remove="XML_SOLCREES\**" />
+    <EmbeddedResource Remove="XML_SOLGRA\**" />
+    <EmbeddedResource Remove="XML_SOLI\**" />
+    <EmbeddedResource Remove="XML_SOLMAAC\**" />
+    <EmbeddedResource Remove="XML_SOLMAFI\**" />
     <None Remove="common\**" />
     <None Remove="files\**" />
+    <None Remove="XML_SOLCANMA\**" />
+    <None Remove="XML_SOLCREES\**" />
+    <None Remove="XML_SOLGRA\**" />
+    <None Remove="XML_SOLI\**" />
+    <None Remove="XML_SOLMAAC\**" />
+    <None Remove="XML_SOLMAFI\**" />
   </ItemGroup>
 
 </Project>
