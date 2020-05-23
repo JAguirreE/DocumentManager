@@ -100,7 +100,7 @@ namespace DocumentManager
       builder.Append(XMLLabels.XMLROOTEND);
 
       File.WriteAllText(filePath, builder.ToString());
-      ToCanonicalXML(builder.ToString(), fileType);
+      ToCanonicalXML(builder.ToString(), fileType, filePath);
     }
 
     /// <summary>
@@ -109,7 +109,7 @@ namespace DocumentManager
     /// </summary>
     /// <param name="xmlFile">Archivo xml</param>
     /// <param name="fileType">Tipo del archivo</param>
-    private void ToCanonicalXML(string xmlFile, string fileType)
+    private void ToCanonicalXML(string xmlFile, string fileType, string filePath)
     {
       // Separar el archivo por filas
       string[] rows = xmlFile.Split("\n");
@@ -164,7 +164,7 @@ namespace DocumentManager
       string canonicalXML = builder.ToString();
 
       // Enviar al manejador de colas
-      QueueManager.Instance.Enqueue(canonicalXML, fileType);
+      QueueManager.Instance.Enqueue(canonicalXML, fileType, filePath);
     }
 
     /// <summary>
