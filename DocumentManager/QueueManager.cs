@@ -8,9 +8,9 @@ namespace DocumentManager
 {
   public sealed class QueueManager
   {
-    public Queue highPriorityQ;
-    public Queue midPriorityQ;
-    public Queue lowPriorityQ;
+    private readonly Queue highPriorityQ;
+    private readonly Queue midPriorityQ;
+    private readonly Queue lowPriorityQ;
 
     #region Constructor
     private QueueManager()
@@ -25,51 +25,48 @@ namespace DocumentManager
 
     public void Enqueue(string canonicalXml, string fileType, string filePath)
     {
-
       switch (fileType)
       {
         // Alta propridad
         case FileTypes.SOLI:
         case FileTypes.MAFI:
         case FileTypes.MAAC:
-          EnqueueToHigh();
+          highPriorityQ.Enqueue(canonicalXml, fileType, filePath);
           break;
 
         // Media prioridad
         case FileTypes.SOLGRA:
         case FileTypes.CREES:
-          EnqueueToMid();
+          midPriorityQ.Enqueue(canonicalXml, fileType, filePath);
           break;
 
         // Baja prioridad
         case FileTypes.CANMA:
-          EnqueueToLow();
+          lowPriorityQ.Enqueue(canonicalXml, fileType, filePath);
           break;
 
         default:
           break;
       }
 
-      File.WriteAllText(filePath, canonicalXml);
+      //File.WriteAllText(filePath, canonicalXml);
 
     }
 
-    private void EnqueueToHigh()
+    public void ProcessHighPriority()
+    {
+      Node node = highPriorityQ.GetFirstInQueue();
+      Process(node.CanonicalXML, node.FileType, node.FilePath);
+    }
+    public void ProcessMidPriority()
     {
 
     }
-
-    private void EnqueueToMid()
+    public void ProcessLowPriority()
     {
 
     }
-
-    private void EnqueueToLow()
-    {
-
-    }
-
-    private void Proccess(string canonicalXml, string fileType, string filePath)
+    private void Process(string canonicalXml, string fileType, string filePath)
     {
 
       switch (fileType)
@@ -103,6 +100,7 @@ namespace DocumentManager
       }
 
       File.WriteAllText(filePath, canonicalXml);
+      WriteLog();
     }
 
     private void WriteLog()

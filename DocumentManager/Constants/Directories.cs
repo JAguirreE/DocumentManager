@@ -8,6 +8,7 @@ namespace DocumentManager.Constants
   {
     public static string FILESPATH = Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).Parent.FullName).FullName + "\\files";
     public static string COMMONPATH = Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).Parent.FullName).FullName + "\\common";
+    public static string OUTLOGPATH = Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).Parent.FullName).FullName + "\\OUT_LOG";
 
     public static string SOLCANMAPATH = Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).Parent.FullName).FullName + "\\XML_SOLCANMA";
     public static string SOLCREESPATH = Directory.GetParent(Directory.GetParent(Environment.CurrentDirectory).Parent.FullName).FullName + "\\XML_SOLCREES";
