@@ -151,8 +151,14 @@ namespace DocumentManager
         Directories.SOLGRAPATH,
         Directories.SOLIPATH,
         Directories.SOLMAACPATH,
-        Directories.SOLMAFIPATH
-
+        Directories.SOLMAFIPATH,
+        Directories.OUTSOLCANMAPATH,
+        Directories.OUTSOLCREESPATH,
+        Directories.OUTSOLGRAPATH,
+        Directories.OUTSOLIPATH,
+        Directories.OUTSOLMAACPATH,
+        Directories.OUTSOLMAFIPATH,
+        Directories.OUTLOGPATH,
       };
 
       foreach(string dir in dirs)
@@ -164,19 +170,6 @@ namespace DocumentManager
           file.Delete();
         }
       }
-      //DirectoryInfo infoFiles = new DirectoryInfo(FilesPath);
-      //DirectoryInfo infoCommon = new DirectoryInfo(CommonPath);
-      
-
-      //foreach (FileInfo file in infoFiles.GetFiles())
-      //{
-      //  file.Delete();
-      //}
-
-      //foreach (FileInfo file in infoCommon.GetFiles())
-      //{
-      //  file.Delete();
-      //}
     }
 
     /// <summary>

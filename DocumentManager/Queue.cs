@@ -1,4 +1,6 @@
-﻿namespace DocumentManager
+﻿using System;
+
+namespace DocumentManager
 {
   public class Queue
   {
@@ -10,14 +12,7 @@
     /// <returns>Verdadero o false según el caso</returns>
     public bool IsEmptyList()
     {
-      if (Tail == null)
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
+      return Tail == null;
     }
 
     /// <summary>
@@ -39,6 +34,7 @@
       }
       else
       {
+        Tail.Previous = newNode;
         newNode.Next = Tail;
         Tail = newNode;
       }
@@ -52,13 +48,31 @@
     {
       Node actualNode = Tail;
 
-      while(actualNode.Next != null)
+      if(actualNode != null)
       {
-        actualNode = actualNode.Next;
+        while (actualNode.Next != null)
+        {
+          actualNode = actualNode.Next;
+        }
+
+        if(actualNode.Previous != null)
+        {
+          actualNode.Previous.Next = null;
+        }
       }
 
-      actualNode.Previous.Next = null;
       return actualNode;
+    }
+
+    public void Count()
+    {
+      Node actualNode = Tail;
+      int counter = 0;
+      while (actualNode.Next != null)
+      {
+        counter++;
+      }
+      Console.WriteLine(counter);
     }
   }
 }

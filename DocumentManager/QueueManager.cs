@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using System.IO;
 using DocumentManager.Constants;
 
 namespace DocumentManager
 {
   public sealed class QueueManager
   {
+    #region Propiedades
     private readonly Queue highPriorityQ;
     private readonly Queue midPriorityQ;
     private readonly Queue lowPriorityQ;
+
+    private readonly Logger logger;
+    #endregion
 
     #region Constructor
     private QueueManager()
@@ -18,6 +19,8 @@ namespace DocumentManager
       highPriorityQ = new Queue();
       midPriorityQ = new Queue();
       lowPriorityQ = new Queue();
+
+      logger = new Logger(); 
     }
 
     public static QueueManager Instance { get; } = new QueueManager();
@@ -48,64 +51,74 @@ namespace DocumentManager
         default:
           break;
       }
-
-      //File.WriteAllText(filePath, canonicalXml);
-
     }
-
     public void ProcessHighPriority()
     {
-      Node node = highPriorityQ.GetFirstInQueue();
-      Process(node.CanonicalXML, node.FileType, node.FilePath);
+      while(true)
+      {
+        Node node = highPriorityQ.GetFirstInQueue();
+        if (node != null)
+        {
+          Process(node);
+        }
+      }
     }
     public void ProcessMidPriority()
     {
-
+      while (true)
+      {
+        Node node = midPriorityQ.GetFirstInQueue();
+        if (node != null)
+        {
+          Process(node);
+        }
+      }
     }
     public void ProcessLowPriority()
     {
-
+      while (true)
+      {
+        Node node = lowPriorityQ.GetFirstInQueue();
+        if (node != null)
+        {
+          Process(node);
+        }
+      }
     }
-    private void Process(string canonicalXml, string fileType, string filePath)
+    private void Process(Node node)
     {
-
-      switch (fileType)
+      switch (node.FileType)
       {
         case FileTypes.SOLI:
-          filePath.Replace("XML_SOLI", "OUT_SOLI");
+          node.FilePath = node.FilePath.Replace("XML_SOLI", "OUT_SOLI");
           break;
 
         case FileTypes.MAFI:
-          filePath.Replace("XML_SOLMAFI", "OUT_SOLMAFI");
+          node.FilePath = node.FilePath.Replace("XML_SOLMAFI", "OUT_SOLMAFI");
           break;
 
         case FileTypes.MAAC:
-          filePath.Replace("XML_SOLMAAC", "OUT_SOLMAAC");
+          node.FilePath = node.FilePath.Replace("XML_SOLMAAC", "OUT_SOLMAAC");
           break;
 
         case FileTypes.SOLGRA:
-          filePath.Replace("XML_SOLGRA", "OUT_SOLGRA");
+          node.FilePath = node.FilePath.Replace("XML_SOLGRA", "OUT_SOLGRA");
           break;
 
         case FileTypes.CREES:
-          filePath.Replace("XML_SOLCREES", "OUT_SOLCREES");
+          node.FilePath = node.FilePath.Replace("XML_SOLCREES", "OUT_SOLCREES");
           break;
 
         case FileTypes.CANMA:
-          filePath.Replace("XML_SOLCANMA", "OUT_SOLCANMA");
+          node.FilePath = node.FilePath.Replace("XML_SOLCANMA", "OUT_SOLCANMA");
           break;
 
         default:
-          break;
+          return;
       }
 
-      File.WriteAllText(filePath, canonicalXml);
-      WriteLog();
-    }
-
-    private void WriteLog()
-    {
-
+      File.WriteAllText(node.FilePath, node.CanonicalXML);
+      logger.AddProcessLog(node);
     }
 
   }
