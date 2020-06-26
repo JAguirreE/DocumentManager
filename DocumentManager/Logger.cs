@@ -17,9 +17,6 @@ namespace DocumentManager
       string line = string.Format("Tipo de documento: {0}, Fecha de procesamiento: {1}, Peso del archivo: {2} \n", node.FileType, DateTime.Now, xmlFile.Length);
       builder.Append(line);
 
-      //DirectoryInfo dirInfo = new DirectoryInfo(Directories.OUTLOGPATH);
-      //FileInfo logFile = dirInfo.GetFiles().FirstOrDefault();
-
       FileInfo logFile = new FileInfo(string.Concat(Directories.OUTLOGPATH, logName));
 
       if (logFile != null)
