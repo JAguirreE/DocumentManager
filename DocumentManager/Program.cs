@@ -7,6 +7,7 @@ namespace DocumentManager
   {
     static void Main(string[] args)
     {
+      // Comment 2
       // Generamos archivos random de cada tipo de solicitud
       DocGenerator docGenerator = new DocGenerator();
       docGenerator.GenerateDocs();
