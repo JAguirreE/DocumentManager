@@ -52,6 +52,9 @@ namespace DocumentManager
       {
         Converter.ConvertToXML(file);
         file.Delete();
+
+      // Comentario carlos Correa//
+      // comentarios//
       }
     }
   }
